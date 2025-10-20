@@ -299,6 +299,7 @@
             display: flex;
             border-bottom: 1px solid #dee2e6;
             margin-bottom: 15px;
+            overflow-x: auto;
         }
 
         .tab {
@@ -306,6 +307,7 @@
             cursor: pointer;
             border-bottom: 2px solid transparent;
             transition: var(--transition);
+            white-space: nowrap;
         }
 
         .tab.active {
@@ -363,6 +365,14 @@
             background-color: #e11570;
         }
 
+        .btn-warning {
+            background-color: var(--warning);
+        }
+
+        .btn-warning:hover {
+            background-color: #e0861b;
+        }
+
         /* Badges */
         .badge {
             display: inline-block;
@@ -384,6 +394,10 @@
 
         .badge-danger {
             background-color: var(--danger);
+        }
+
+        .badge-primary {
+            background-color: var(--primary);
         }
 
         /* Lists */
@@ -459,6 +473,12 @@
             padding: 15px;
             border-radius: var(--border-radius);
             background-color: rgba(67, 97, 238, 0.1);
+            transition: var(--transition);
+        }
+
+        .team-member:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .team-avatar {
@@ -514,6 +534,12 @@
             border-radius: var(--border-radius);
             text-align: center;
             background-color: rgba(76, 201, 240, 0.1);
+            transition: var(--transition);
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .emotional-support {
@@ -522,6 +548,77 @@
             padding: 20px;
             border-radius: var(--border-radius);
             margin-top: 15px;
+        }
+
+        .admin-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .admin-card {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .leaderboard {
+            margin-top: 15px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            background-color: rgba(76, 201, 240, 0.1);
+        }
+
+        .leaderboard-rank {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
         }
 
         /* Footer */
@@ -571,6 +668,11 @@
             .dashboard {
                 grid-template-columns: 1fr;
             }
+            
+            .tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
         }
     </style>
 </head>
@@ -585,10 +687,10 @@
                 <nav>
                     <ul>
                         <li><a href="#" class="active">Dashboard</a></li>
-                        <li><a href="#">Training</a></li>
-                        <li><a href="#">Analytics</a></li>
-                        <li><a href="#">Team</a></li>
-                        <li><a href="#">Settings</a></li>
+                        <li><a href="#" id="trainingTab">Training</a></li>
+                        <li><a href="#" id="analyticsTab">Analytics</a></li>
+                        <li><a href="#" id="teamTab">Team</a></li>
+                        <li><a href="#" id="settingsTab">Settings</a></li>
                     </ul>
                 </nav>
                 <button class="theme-toggle" id="themeToggle">🌙</button>
@@ -603,30 +705,30 @@
                     <div class="card">
                         <h3><span class="card-icon">📊</span> Security Score</h3>
                         <div class="progress-bar">
-                            <div class="progress" style="width: 78%"></div>
+                            <div class="progress" id="securityScore" style="width: 78%"></div>
                         </div>
-                        <p>78% - Good</p>
+                        <p id="securityText">78% - Good</p>
                     </div>
                     <div class="card">
                         <h3><span class="card-icon">🚨</span> Risk Assessment</h3>
                         <div class="risk-meter">
-                            <div class="risk-indicator" style="left: 30%"></div>
+                            <div class="risk-indicator" id="riskIndicator" style="left: 30%"></div>
                         </div>
-                        <p>Medium Risk - 30%</p>
+                        <p id="riskText">Medium Risk - 30%</p>
                     </div>
                     <div class="card">
                         <h3><span class="card-icon">🎯</span> Training Progress</h3>
                         <div class="progress-bar">
-                            <div class="progress" style="width: 65%"></div>
+                            <div class="progress" id="trainingProgress" style="width: 65%"></div>
                         </div>
-                        <p>65% Complete</p>
+                        <p id="trainingText">65% Complete</p>
                     </div>
                     <div class="card">
                         <h3><span class="card-icon">❤️</span> Wellness Status</h3>
                         <div class="progress-bar">
-                            <div class="progress" style="width: 85%"></div>
+                            <div class="progress" id="wellnessStatus" style="width: 85%"></div>
                         </div>
-                        <p>85% - Optimal</p>
+                        <p id="wellnessText">85% - Optimal</p>
                     </div>
                 </div>
 
@@ -635,6 +737,7 @@
                     <div class="tab" data-tab="analytics">Predictive Analytics</div>
                     <div class="tab" data-tab="team">Team Management</div>
                     <div class="tab" data-tab="patterns">Behavior Patterns</div>
+                    <div class="tab" data-tab="admin">Admin Dashboard</div>
                 </div>
 
                 <div class="tab-content active" id="chat-tab">
@@ -668,7 +771,7 @@
                         <h3><span class="card-icon">📈</span> Predictive Risk Analytics</h3>
                         <p>ZaraAI analyzes your behavior patterns to predict potential security risks before they occur.</p>
                         
-                        <div class="analytics-chart">
+                        <div class="analytics-chart" id="riskChart">
                             <div class="chart-bar" style="height: 70%">
                                 <div class="chart-bar-label">Phishing</div>
                             </div>
@@ -689,12 +792,31 @@
                         <div class="form-group">
                             <label class="form-label">Risk Prediction for Next 30 Days</label>
                             <div class="progress-bar">
-                                <div class="progress" style="width: 30%"></div>
+                                <div class="progress" id="riskPrediction" style="width: 30%"></div>
                             </div>
-                            <p>30% probability of security incident</p>
+                            <p id="riskPredictionText">30% probability of security incident</p>
                         </div>
                         
-                        <button class="btn btn-block">Generate Detailed Report</button>
+                        <button class="btn btn-block" id="generateReport">Generate Detailed Report</button>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><span class="card-icon">🔍</span> Behavioral Insights</h3>
+                        <p>Based on your activity patterns, here are personalized recommendations:</p>
+                        <ul class="list">
+                            <li class="list-item">
+                                <span>You tend to click suspicious links more frequently in the evening</span>
+                                <span class="badge badge-warning">Pattern Detected</span>
+                            </li>
+                            <li class="list-item">
+                                <span>Password reuse detected across 3 platforms</span>
+                                <span class="badge badge-danger">High Risk</span>
+                            </li>
+                            <li class="list-item">
+                                <span>Excellent phishing detection during morning hours</span>
+                                <span class="badge badge-success">Strength</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
@@ -703,36 +825,20 @@
                         <h3><span class="card-icon">👥</span> Team Management</h3>
                         <p>Manage your team's cybersecurity training and monitor group progress.</p>
                         
-                        <div class="team-grid">
-                            <div class="team-member">
-                                <div class="team-avatar">JS</div>
-                                <h4>John Smith</h4>
-                                <p>Security Score: 82%</p>
-                                <span class="badge badge-success">Active</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="team-avatar">MJ</div>
-                                <h4>Maria Johnson</h4>
-                                <p>Security Score: 75%</p>
-                                <span class="badge badge-success">Active</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="team-avatar">RD</div>
-                                <h4>Robert Davis</h4>
-                                <p>Security Score: 68%</p>
-                                <span class="badge badge-warning">Needs Training</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="team-avatar">SW</div>
-                                <h4>Sarah Wilson</h4>
-                                <p>Security Score: 90%</p>
-                                <span class="badge badge-success">Expert</span>
-                            </div>
+                        <div class="team-grid" id="teamGrid">
+                            <!-- Team members will be dynamically added here -->
                         </div>
                         
                         <div class="form-group" style="margin-top: 20px;">
-                            <button class="btn">Add Team Member</button>
-                            <button class="btn btn-success">Schedule Group Training</button>
+                            <button class="btn" id="addMemberBtn">Add Team Member</button>
+                            <button class="btn btn-success" id="scheduleTrainingBtn">Schedule Group Training</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><span class="card-icon">🏆</span> Team Leaderboard</h3>
+                        <div class="leaderboard" id="teamLeaderboard">
+                            <!-- Leaderboard will be dynamically added here -->
                         </div>
                     </div>
                 </div>
@@ -742,89 +848,164 @@
                         <h3><span class="card-icon">🔮</span> Behavioral Pattern Recognition</h3>
                         <p>ZaraAI learns from your behavior to identify potential vulnerabilities and provide personalized recommendations.</p>
                         
-                        <div class="pattern-grid">
-                            <div class="pattern-card">
-                                <h4>Password Habits</h4>
-                                <p>Moderate strength</p>
-                                <span class="badge badge-warning">Needs Improvement</span>
-                            </div>
-                            <div class="pattern-card">
-                                <h4>Phishing Awareness</h4>
-                                <p>High detection rate</p>
-                                <span class="badge badge-success">Excellent</span>
-                            </div>
-                            <div class="pattern-card">
-                                <h4>Social Media Usage</h4>
-                                <p>Low risk sharing</p>
-                                <span class="badge badge-success">Secure</span>
-                            </div>
-                            <div class="pattern-card">
-                                <h4>Device Security</h4>
-                                <p>Regular updates</p>
-                                <span class="badge badge-success">Optimal</span>
-                            </div>
+                        <div class="pattern-grid" id="patternGrid">
+                            <!-- Pattern cards will be dynamically added here -->
                         </div>
                         
                         <div class="emotional-support">
                             <h4>❤️ Emotional Intelligence Analysis</h4>
-                            <p>Based on your interaction patterns, I've detected moderate stress levels. Would you like to try a 5-minute mindfulness exercise?</p>
-                            <button class="btn btn-light" style="margin-top: 10px;">Start Exercise</button>
+                            <p id="emotionalStatus">Based on your interaction patterns, I've detected moderate stress levels. Would you like to try a 5-minute mindfulness exercise?</p>
+                            <button class="btn" id="mindfulnessBtn" style="background: white; color: #4361ee; margin-top: 10px;">Start Exercise</button>
                         </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="admin-tab">
+                    <div class="card">
+                        <h3><span class="card-icon">⚙️</span> Admin Dashboard</h3>
+                        <p>Comprehensive overview of organizational security posture and team performance.</p>
+                        
+                        <div class="admin-dashboard">
+                            <div class="admin-card">
+                                <h4>Total Users</h4>
+                                <p id="totalUsers">24</p>
+                            </div>
+                            <div class="admin-card">
+                                <h4>Avg Security Score</h4>
+                                <p id="avgSecurityScore">76%</p>
+                            </div>
+                            <div class="admin-card">
+                                <h4>Training Completion</h4>
+                                <p id="trainingCompletion">68%</p>
+                            </div>
+                            <div class="admin-card">
+                                <h4>Incidents This Month</h4>
+                                <p id="monthlyIncidents">3</p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button class="btn btn-block" id="exportDataBtn">Export Organizational Data</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><span class="card-icon">📋</span> Security Compliance</h3>
+                        <p>Track your organization's compliance with security standards.</p>
+                        <ul class="list">
+                            <li class="list-item">
+                                <span>Password Policy Enforcement</span>
+                                <span class="badge badge-success">Compliant</span>
+                            </li>
+                            <li class="list-item">
+                                <span>Data Encryption Standards</span>
+                                <span class="badge badge-success">Compliant</span>
+                            </li>
+                            <li class="list-item">
+                                <span>Regular Security Training</span>
+                                <span class="badge badge-warning">Needs Attention</span>
+                            </li>
+                            <li class="list-item">
+                                <span>Incident Response Plan</span>
+                                <span class="badge badge-danger">Non-Compliant</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
             <div class="sidebar">
                 <div class="card user-profile">
-                    <div class="avatar">JD</div>
-                    <h3>John Doe</h3>
-                    <p>Security Administrator</p>
+                    <div class="avatar" id="userAvatar">JD</div>
+                    <h3 id="userName">John Doe</h3>
+                    <p id="userRole">Security Administrator</p>
                     <div class="progress-bar" style="margin: 15px 0;">
-                        <div class="progress" style="width: 78%"></div>
+                        <div class="progress" id="userLevelProgress" style="width: 70%"></div>
                     </div>
-                    <p>Level 7 Cyber Defender</p>
+                    <p id="userLevel">Level 7 Cyber Defender</p>
                 </div>
 
                 <div class="card">
                     <h3><span class="card-icon">🏆</span> Achievements</h3>
-                    <ul class="list">
-                        <li class="list-item">
-                            <span>Phishing Master</span>
-                            <span class="badge badge-success">Earned</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Password Guardian</span>
-                            <span class="badge badge-success">Earned</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Social Media Sentinel</span>
-                            <span class="badge">Locked</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Data Defender</span>
-                            <span class="badge">Locked</span>
-                        </li>
+                    <ul class="list" id="achievementsList">
+                        <!-- Achievements will be dynamically added here -->
                     </ul>
                 </div>
 
                 <div class="card">
                     <h3><span class="card-icon">📅</span> Upcoming Training</h3>
-                    <ul class="list">
-                        <li class="list-item">
-                            <span>Advanced Phishing</span>
-                            <span class="badge badge-warning">Tomorrow</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Social Engineering</span>
-                            <span class="badge">Next Week</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Data Protection</span>
-                            <span class="badge">In 2 Weeks</span>
-                        </li>
+                    <ul class="list" id="trainingList">
+                        <!-- Training items will be dynamically added here -->
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3><span class="card-icon">🔔</span> Notifications</h3>
+                    <ul class="list" id="notificationsList">
+                        <!-- Notifications will be dynamically added here -->
                     </ul>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="addMemberModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Team Member</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="addMemberForm">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="memberName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="memberEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-control" id="memberRole" required>
+                        <option value="user">User</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-block">Add Member</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="scheduleTrainingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Schedule Group Training</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="scheduleTrainingForm">
+                <div class="form-group">
+                    <label class="form-label">Training Type</label>
+                    <select class="form-control" id="trainingType" required>
+                        <option value="phishing">Phishing Awareness</option>
+                        <option value="password">Password Security</option>
+                        <option value="social">Social Engineering</option>
+                        <option value="data">Data Protection</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date & Time</label>
+                    <input type="datetime-local" class="form-control" id="trainingDateTime" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Participants</label>
+                    <select class="form-control" id="trainingParticipants" multiple>
+                        <!-- Options will be dynamically added -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-block btn-success">Schedule Training</button>
+            </form>
         </div>
     </div>
 
@@ -857,113 +1038,501 @@
     </footer>
 
     <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
-        
-        themeToggle.addEventListener('click', () => {
-            const newTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        // Application State
+        const state = {
+            user: {
+                name: "John Doe",
+                role: "Security Administrator",
+                securityScore: 78,
+                trainingProgress: 65,
+                wellnessStatus: 85,
+                riskLevel: 30,
+                level: 7
+            },
+            team: [
+                { id: 1, name: "John Smith", avatar: "JS", score: 82, status: "active" },
+                { id: 2, name: "Maria Johnson", avatar: "MJ", score: 75, status: "active" },
+                { id: 3, name: "Robert Davis", avatar: "RD", score: 68, status: "needs_training" },
+                { id: 4, name: "Sarah Wilson", avatar: "SW", score: 90, status: "expert" }
+            ],
+            achievements: [
+                { name: "Phishing Master", earned: true },
+                { name: "Password Guardian", earned: true },
+                { name: "Social Media Sentinel", earned: false },
+                { name: "Data Defender", earned: false }
+            ],
+            training: [
+                { name: "Advanced Phishing", date: "Tomorrow", status: "upcoming" },
+                { name: "Social Engineering", date: "Next Week", status: "upcoming" },
+                { name: "Data Protection", date: "In 2 Weeks", status: "upcoming" }
+            ],
+            patterns: [
+                { category: "Password Habits", status: "Moderate strength", risk: "warning" },
+                { category: "Phishing Awareness", status: "High detection rate", risk: "success" },
+                { category: "Social Media Usage", status: "Low risk sharing", risk: "success" },
+                { category: "Device Security", status: "Regular updates", risk: "success" }
+            ],
+            notifications: [
+                { text: "Phishing simulation available", time: "2 hours ago" },
+                { text: "Team security score increased by 5%", time: "1 day ago" },
+                { text: "New training module released", time: "3 days ago" }
+            ]
+        };
+
+        // DOM Elements
+        const elements = {
+            themeToggle: document.getElementById('themeToggle'),
+            tabs: document.querySelectorAll('.tab'),
+            tabContents: document.querySelectorAll('.tab-content'),
+            chatMessages: document.getElementById('chatMessages'),
+            messageInput: document.getElementById('messageInput'),
+            sendMessage: document.getElementById('sendMessage'),
+            riskIndicator: document.getElementById('riskIndicator'),
+            securityScore: document.getElementById('securityScore'),
+            trainingProgress: document.getElementById('trainingProgress'),
+            wellnessStatus: document.getElementById('wellnessStatus'),
+            userLevelProgress: document.getElementById('userLevelProgress'),
+            teamGrid: document.getElementById('teamGrid'),
+            achievementsList: document.getElementById('achievementsList'),
+            trainingList: document.getElementById('trainingList'),
+            patternGrid: document.getElementById('patternGrid'),
+            notificationsList: document.getElementById('notificationsList'),
+            addMemberModal: document.getElementById('addMemberModal'),
+            scheduleTrainingModal: document.getElementById('scheduleTrainingModal'),
+            addMemberBtn: document.getElementById('addMemberBtn'),
+            scheduleTrainingBtn: document.getElementById('scheduleTrainingBtn'),
+            closeModals: document.querySelectorAll('.close-modal'),
+            addMemberForm: document.getElementById('addMemberForm'),
+            scheduleTrainingForm: document.getElementById('scheduleTrainingForm'),
+            teamLeaderboard: document.getElementById('teamLeaderboard'),
+            emotionalStatus: document.getElementById('emotionalStatus'),
+            mindfulnessBtn: document.getElementById('mindfulnessBtn'),
+            generateReport: document.getElementById('generateReport'),
+            exportDataBtn: document.getElementById('exportDataBtn'),
+            riskPrediction: document.getElementById('riskPrediction'),
+            riskPredictionText: document.getElementById('riskPredictionText')
+        };
+
+        // Initialize Application
+        function initApp() {
+            loadUserData();
+            setupEventListeners();
+            renderTeamMembers();
+            renderAchievements();
+            renderTraining();
+            renderPatterns();
+            renderNotifications();
+            renderLeaderboard();
+            simulateDynamicUpdates();
+        }
+
+        // Load user data from localStorage or use defaults
+        function loadUserData() {
+            const savedData = localStorage.getItem('zaraai-user');
+            if (savedData) {
+                const userData = JSON.parse(savedData);
+                state.user = { ...state.user, ...userData };
+            }
+            
+            updateUIWithUserData();
+        }
+
+        // Update UI with current user data
+        function updateUIWithUserData() {
+            // Update progress bars
+            elements.securityScore.style.width = `${state.user.securityScore}%`;
+            elements.trainingProgress.style.width = `${state.user.trainingProgress}%`;
+            elements.wellnessStatus.style.width = `${state.user.wellnessStatus}%`;
+            elements.userLevelProgress.style.width = `${(state.user.level / 10) * 100}%`;
+            elements.riskIndicator.style.left = `${state.user.riskLevel}%`;
+            elements.riskPrediction.style.width = `${state.user.riskLevel}%`;
+            
+            // Update text
+            document.getElementById('securityText').textContent = `${state.user.securityScore}% - ${getSecurityLevel(state.user.securityScore)}`;
+            document.getElementById('trainingText').textContent = `${state.user.trainingProgress}% Complete`;
+            document.getElementById('wellnessText').textContent = `${state.user.wellnessStatus}% - ${getWellnessLevel(state.user.wellnessStatus)}`;
+            document.getElementById('riskText').textContent = `${getRiskLevel(state.user.riskLevel)} Risk - ${state.user.riskLevel}%`;
+            document.getElementById('riskPredictionText').textContent = `${state.user.riskLevel}% probability of security incident`;
+            document.getElementById('userName').textContent = state.user.name;
+            document.getElementById('userRole').textContent = state.user.role;
+            document.getElementById('userLevel').textContent = `Level ${state.user.level} Cyber Defender`;
+            document.getElementById('userAvatar').textContent = getInitials(state.user.name);
+        }
+
+        // Helper functions
+        function getSecurityLevel(score) {
+            if (score >= 90) return 'Excellent';
+            if (score >= 75) return 'Good';
+            if (score >= 60) return 'Fair';
+            return 'Poor';
+        }
+
+        function getWellnessLevel(score) {
+            if (score >= 80) return 'Optimal';
+            if (score >= 60) return 'Good';
+            if (score >= 40) return 'Moderate';
+            return 'Needs Attention';
+        }
+
+        function getRiskLevel(score) {
+            if (score >= 70) return 'High';
+            if (score >= 40) return 'Medium';
+            return 'Low';
+        }
+
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Theme toggle
+            elements.themeToggle.addEventListener('click', toggleTheme);
+            
+            // Tab switching
+            elements.tabs.forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+            
+            // Chat functionality
+            elements.sendMessage.addEventListener('click', sendChatMessage);
+            elements.messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendChatMessage();
+            });
+            
+            // Modal functionality
+            elements.addMemberBtn.addEventListener('click', () => showModal('addMemberModal'));
+            elements.scheduleTrainingBtn.addEventListener('click', () => showModal('scheduleTrainingModal'));
+            elements.closeModals.forEach(btn => {
+                btn.addEventListener('click', closeModals);
+            });
+            
+            // Form submissions
+            elements.addMemberForm.addEventListener('submit', addTeamMember);
+            elements.scheduleTrainingForm.addEventListener('submit', scheduleTraining);
+            
+            // Other buttons
+            elements.mindfulnessBtn.addEventListener('click', startMindfulnessExercise);
+            elements.generateReport.addEventListener('click', generateRiskReport);
+            elements.exportDataBtn.addEventListener('click', exportOrganizationalData);
+            
+            // Navigation
+            document.getElementById('trainingTab').addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab('chat');
+            });
+            document.getElementById('analyticsTab').addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab('analytics');
+            });
+            document.getElementById('teamTab').addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab('team');
+            });
+            document.getElementById('settingsTab').addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab('admin');
+            });
+        }
+
+        // Theme functionality
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
-        });
+            elements.themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+        }
 
-        // Tab Switching
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs and contents
-                tabs.forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Add active class to clicked tab and corresponding content
-                tab.classList.add('active');
-                const tabId = tab.getAttribute('data-tab');
-                document.getElementById(`${tabId}-tab`).classList.add('active');
+        // Tab switching
+        function switchTab(tabName) {
+            // Update tabs
+            elements.tabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
             });
-        });
+            
+            // Update content
+            elements.tabContents.forEach(content => {
+                content.classList.toggle('active', content.id === `${tabName}-tab`);
+            });
+        }
 
-        // Chat Functionality
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendMessage = document.getElementById('sendMessage');
+        // Chat functionality
+        function sendChatMessage() {
+            const message = elements.messageInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addMessage(message, true);
+            elements.messageInput.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = [
+                    "I've analyzed your security patterns and recommend completing the phishing simulation to improve your score.",
+                    "Based on your recent activity, I've detected some stress indicators. Would you like to try a quick breathing exercise?",
+                    "Your team's security score has improved by 5% this week. Great job!",
+                    "I've updated your risk assessment based on the latest behavioral data.",
+                    "I notice you've been working late. Remember to take breaks to maintain focus and security awareness."
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addMessage(randomResponse, false);
+                
+                // Occasionally update emotional status based on conversation
+                if (Math.random() > 0.7) {
+                    updateEmotionalStatus();
+                }
+            }, 1000 + Math.random() * 2000);
+        }
 
         function addMessage(text, isUser) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message');
             messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
             messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            elements.chatMessages.appendChild(messageDiv);
+            elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
         }
 
-        sendMessage.addEventListener('click', () => {
-            const message = messageInput.value.trim();
-            if (message) {
-                addMessage(message, true);
-                messageInput.value = '';
+        // Modal functionality
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // Team management
+        function renderTeamMembers() {
+            elements.teamGrid.innerHTML = '';
+            state.team.forEach(member => {
+                const memberEl = document.createElement('div');
+                memberEl.className = 'team-member';
+                memberEl.innerHTML = `
+                    <div class="team-avatar">${member.avatar}</div>
+                    <h4>${member.name}</h4>
+                    <p>Security Score: ${member.score}%</p>
+                    <span class="badge ${getStatusBadge(member.status)}">${getStatusText(member.status)}</span>
+                `;
+                elements.teamGrid.appendChild(memberEl);
+            });
+        }
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'active': return 'badge-success';
+                case 'needs_training': return 'badge-warning';
+                case 'expert': return 'badge-primary';
+                default: return 'badge';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'active': return 'Active';
+                case 'needs_training': return 'Needs Training';
+                case 'expert': return 'Expert';
+                default: return status;
+            }
+        }
+
+        function addTeamMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('memberName').value;
+            const email = document.getElementById('memberEmail').value;
+            const role = document.getElementById('memberRole').value;
+            
+            const newMember = {
+                id: state.team.length + 1,
+                name,
+                avatar: getInitials(name),
+                score: Math.floor(Math.random() * 30) + 60, // Random score between 60-90
+                status: 'active'
+            };
+            
+            state.team.push(newMember);
+            renderTeamMembers();
+            renderLeaderboard();
+            closeModals();
+            elements.addMemberForm.reset();
+            
+            // Show notification
+            addNotification(`Added ${name} to the team`);
+        }
+
+        function scheduleTraining(e) {
+            e.preventDefault();
+            const type = document.getElementById('trainingType').value;
+            const datetime = document.getElementById('trainingDateTime').value;
+            
+            // In a real app, this would schedule the training
+            addNotification(`Scheduled ${type} training for ${new Date(datetime).toLocaleDateString()}`);
+            closeModals();
+            elements.scheduleTrainingForm.reset();
+        }
+
+        // Achievements
+        function renderAchievements() {
+            elements.achievementsList.innerHTML = '';
+            state.achievements.forEach(achievement => {
+                const li = document.createElement('li');
+                li.className = 'list-item';
+                li.innerHTML = `
+                    <span>${achievement.name}</span>
+                    <span class="badge ${achievement.earned ? 'badge-success' : ''}">${achievement.earned ? 'Earned' : 'Locked'}</span>
+                `;
+                elements.achievementsList.appendChild(li);
+            });
+        }
+
+        // Training
+        function renderTraining() {
+            elements.trainingList.innerHTML = '';
+            state.training.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'list-item';
+                li.innerHTML = `
+                    <span>${item.name}</span>
+                    <span class="badge badge-warning">${item.date}</span>
+                `;
+                elements.trainingList.appendChild(li);
+            });
+        }
+
+        // Patterns
+        function renderPatterns() {
+            elements.patternGrid.innerHTML = '';
+            state.patterns.forEach(pattern => {
+                const card = document.createElement('div');
+                card.className = 'pattern-card';
+                card.innerHTML = `
+                    <h4>${pattern.category}</h4>
+                    <p>${pattern.status}</p>
+                    <span class="badge badge-${pattern.risk}">${pattern.risk === 'success' ? 'Secure' : 'Needs Improvement'}</span>
+                `;
+                elements.patternGrid.appendChild(card);
+            });
+        }
+
+        // Notifications
+        function renderNotifications() {
+            elements.notificationsList.innerHTML = '';
+            state.notifications.forEach(notification => {
+                const li = document.createElement('li');
+                li.className = 'list-item';
+                li.innerHTML = `
+                    <span>${notification.text}</span>
+                    <small>${notification.time}</small>
+                `;
+                elements.notificationsList.appendChild(li);
+            });
+        }
+
+        function addNotification(text) {
+            const newNotification = {
+                text,
+                time: 'Just now'
+            };
+            
+            state.notifications.unshift(newNotification);
+            if (state.notifications.length > 5) state.notifications.pop();
+            
+            renderNotifications();
+        }
+
+        // Leaderboard
+        function renderLeaderboard() {
+            elements.teamLeaderboard.innerHTML = '';
+            
+            // Sort team by score
+            const sortedTeam = [...state.team].sort((a, b) => b.score - a.score);
+            
+            sortedTeam.forEach((member, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="leaderboard-rank">${index + 1}</span>
+                        <div class="team-avatar" style="width: 30px; height: 30px; font-size: 0.8rem;">${member.avatar}</div>
+                        <span>${member.name}</span>
+                    </div>
+                    <span>${member.score}%</span>
+                `;
+                elements.teamLeaderboard.appendChild(item);
+            });
+        }
+
+        // Emotional intelligence
+        function updateEmotionalStatus() {
+            const statuses = [
+                "Based on your interaction patterns, I've detected moderate stress levels. Would you like to try a 5-minute mindfulness exercise?",
+                "Your communication patterns suggest you're feeling focused today. Great time for some security training!",
+                "I'm detecting signs of fatigue in your responses. Remember to take regular breaks to maintain security awareness.",
+                "Your positive engagement indicates good mental wellness. Keep up the great work!"
+            ];
+            
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+            elements.emotionalStatus.textContent = randomStatus;
+        }
+
+        function startMindfulnessExercise() {
+            addMessage("Starting a 5-minute mindfulness exercise. Find a comfortable position and focus on your breath.", false);
+            setTimeout(() => {
+                addMessage("Mindfulness exercise completed. How do you feel now?", false);
+            }, 3000);
+        }
+
+        // Analytics and reporting
+        function generateRiskReport() {
+            addNotification("Generating detailed risk assessment report...");
+            setTimeout(() => {
+                addNotification("Risk assessment report generated and sent to your email.");
+            }, 2000);
+        }
+
+        function exportOrganizationalData() {
+            addNotification("Exporting organizational security data...");
+            setTimeout(() => {
+                addNotification("Data export complete. File downloaded to your device.");
+            }, 2000);
+        }
+
+        // Simulate dynamic updates
+        function simulateDynamicUpdates() {
+            // Update risk indicator periodically
+            setInterval(() => {
+                const change = (Math.random() - 0.5) * 10;
+                state.user.riskLevel = Math.max(5, Math.min(80, state.user.riskLevel + change));
+                elements.riskIndicator.style.left = `${state.user.riskLevel}%`;
+                elements.riskPrediction.style.width = `${state.user.riskLevel}%`;
+                document.getElementById('riskText').textContent = `${getRiskLevel(state.user.riskLevel)} Risk - ${Math.round(state.user.riskLevel)}%`;
+                document.getElementById('riskPredictionText').textContent = `${Math.round(state.user.riskLevel)}% probability of security incident`;
                 
-                // Simulate AI response after a short delay
-                setTimeout(() => {
-                    const responses = [
-                        "I've analyzed your security patterns and recommend completing the phishing simulation to improve your score.",
-                        "Based on your recent activity, I've detected some stress indicators. Would you like to try a quick breathing exercise?",
-                        "Your team's security score has improved by 5% this week. Great job!",
-                        "I've updated your risk assessment based on the latest behavioral data."
-                    ];
-                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                    addMessage(randomResponse, false);
-                }, 1000);
-            }
-        });
-
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage.click();
-            }
-        });
-
-        // Simulate dynamic risk indicator
-        const riskIndicator = document.querySelector('.risk-indicator');
-        setInterval(() => {
-            const newRisk = 25 + Math.random() * 20;
-            riskIndicator.style.left = `${newRisk}%`;
+                // Save updated data
+                localStorage.setItem('zaraai-user', JSON.stringify(state.user));
+            }, 8000);
             
-            // Update risk text
-            const riskText = document.querySelector('.card:nth-child(2) p');
-            let riskLevel = 'Low';
-            if (newRisk > 40) riskLevel = 'Medium';
-            if (newRisk > 70) riskLevel = 'High';
-            riskText.textContent = `${riskLevel} Risk - ${Math.round(newRisk)}%`;
-        }, 5000);
-
-        // Initialize with saved data or defaults
-        function initializeApp() {
-            // Load user data from localStorage or set defaults
-            const userData = JSON.parse(localStorage.getItem('zaraai-user') || '{}');
-            
-            if (!userData.securityScore) {
-                userData.securityScore = 78;
-                userData.trainingProgress = 65;
-                userData.wellnessStatus = 85;
-                userData.riskLevel = 30;
-                localStorage.setItem('zaraai-user', JSON.stringify(userData));
-            }
-            
-            // Update UI with user data
-            document.querySelector('.progress-bar .progress').style.width = `${userData.securityScore}%`;
-            document.querySelector('.card:nth-child(3) .progress').style.width = `${userData.trainingProgress}%`;
-            document.querySelector('.card:nth-child(4) .progress').style.width = `${userData.wellnessStatus}%`;
-            riskIndicator.style.left = `${userData.riskLevel}%`;
+            // Randomly update team scores
+            setInterval(() => {
+                state.team.forEach(member => {
+                    const change = (Math.random() - 0.4) * 5; // Tend to increase slightly
+                    member.score = Math.max(50, Math.min(95, member.score + change));
+                });
+                renderTeamMembers();
+                renderLeaderboard();
+            }, 15000);
         }
 
         // Initialize the application
-        initializeApp();
+        initApp();
+
+        // Set initial theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        elements.themeToggle.textContent = savedTheme === 'light' ? '🌙' : '☀️';
     </script>
 </body>
 </html>

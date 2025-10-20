@@ -1,969 +1,531 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZaraAI | Advanced Cybersecurity & Life Coach</title>
-    <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --success: #4cc9f0;
-            --danger: #f72585;
-            --warning: #f8961e;
-            --info: #4895ef;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
+<!-- ADD TO EXISTING CODE - Predictive Risk Assessment System -->
+<script>
+// ==================== PREDICTIVE RISK ASSESSMENT ENGINE ====================
+class PredictiveRiskEngine {
+    constructor() {
+        this.riskPatterns = this.initializeRiskPatterns();
+        this.userBehaviorHistory = [];
+        this.riskScores = {
+            current: 0,
+            trends: [],
+            predictions: []
+        };
+    }
 
-        [data-theme="dark"] {
-            --light: #121212;
-            --dark: #f8f9fa;
-            --gray: #adb5bd;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--light);
-            color: var(--dark);
-            transition: var(--transition);
-            line-height: 1.6;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header Styles */
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: var(--box-shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .logo-icon {
-            font-size: 1.8rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 20px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 5px 10px;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-
-        nav a:hover, nav a.active {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .theme-toggle:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Main Content */
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 20px;
-            padding: 20px 0;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
+    initializeRiskPatterns() {
+        return {
+            stressIndicators: {
+                'rushed_decisions': { weight: 0.8, triggers: ['urgent', 'quick', 'immediately', 'asap'] },
+                'multitasking': { weight: 0.7, triggers: ['busy', 'multiple', 'simultaneous', 'overwhelmed'] },
+                'fatigue': { weight: 0.6, triggers: ['tired', 'exhausted', 'sleep', 'energy'] },
+                'emotional_stress': { weight: 0.9, triggers: ['angry', 'frustrated', 'anxious', 'stressed'] }
+            },
+            securityHabits: {
+                'password_reuse': { weight: 0.7, frequency: 0 },
+                'click_happiness': { weight: 0.8, frequency: 0 },
+                'oversharing': { weight: 0.5, frequency: 0 },
+                'security_bypass': { weight: 0.9, frequency: 0 }
+            },
+            environmentalFactors: {
+                'public_wifi_usage': { weight: 0.4 },
+                'device_sharing': { weight: 0.6 },
+                'travel_frequency': { weight: 0.3 }
             }
-        }
-
-        /* Dashboard */
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background-color: var(--light);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 20px;
-            transition: var(--transition);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h3 {
-            margin-bottom: 15px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-icon {
-            font-size: 1.2rem;
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            height: 8px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .progress {
-            height: 100%;
-            background-color: var(--success);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        /* Chat Interface */
-        .chat-container {
-            background-color: var(--light);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 500px;
-        }
-
-        .chat-header {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            position: relative;
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background-color: var(--primary);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .ai-message {
-            align-self: flex-start;
-            background-color: #e9ecef;
-            color: var(--dark);
-            border-bottom-left-radius: 4px;
-        }
-
-        .chat-input {
-            display: flex;
-            padding: 15px;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #dee2e6;
-            border-radius: 24px;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .chat-input input:focus {
-            border-color: var(--primary);
-        }
-
-        .chat-input button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            margin-left: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .chat-input button:hover {
-            background-color: var(--secondary);
-        }
-
-        /* Sidebar */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .user-profile {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 15px;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 15px;
-        }
-
-        .tab {
-            padding: 10px 15px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: var(--transition);
-        }
-
-        .tab.active {
-            border-bottom-color: var(--primary);
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            text-align: center;
-            transition: var(--transition);
-            font-weight: 500;
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            background-color: var(--secondary);
-            transform: translateY(-2px);
-        }
-
-        .btn-block {
-            display: block;
-            width: 100%;
-        }
-
-        .btn-success {
-            background-color: var(--success);
-        }
-
-        .btn-success:hover {
-            background-color: #3aa8d4;
-        }
-
-        .btn-danger {
-            background-color: var(--danger);
-        }
-
-        .btn-danger:hover {
-            background-color: #e11570;
-        }
-
-        /* Badges */
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            background-color: var(--gray);
-            color: white;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .badge-success {
-            background-color: var(--success);
-        }
-
-        .badge-warning {
-            background-color: var(--warning);
-        }
-
-        .badge-danger {
-            background-color: var(--danger);
-        }
-
-        /* Lists */
-        .list {
-            list-style: none;
-        }
-
-        .list-item {
-            padding: 10px 0;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .list-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Forms */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #dee2e6;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-
-        /* Phase 3 Specific Styles */
-        .risk-meter {
-            height: 20px;
-            background: linear-gradient(to right, #4cc9f0, #f8961e, #f72585);
-            border-radius: 10px;
-            margin: 10px 0;
-            position: relative;
-        }
-
-        .risk-indicator {
-            position: absolute;
-            top: -5px;
-            width: 10px;
-            height: 30px;
-            background-color: var(--dark);
-            border-radius: 5px;
-            transform: translateX(-50%);
-            transition: left 0.5s ease;
-        }
-
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .team-member {
-            text-align: center;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            background-color: rgba(67, 97, 238, 0.1);
-        }
-
-        .team-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-            font-size: 1.2rem;
-        }
-
-        .analytics-chart {
-            height: 200px;
-            background-color: #f8f9fa;
-            border-radius: var(--border-radius);
-            margin: 15px 0;
-            display: flex;
-            align-items: flex-end;
-            padding: 10px;
-            gap: 5px;
-        }
-
-        .chart-bar {
-            flex: 1;
-            background-color: var(--primary);
-            border-radius: 4px 4px 0 0;
-            transition: height 0.5s ease;
-            position: relative;
-        }
-
-        .chart-bar-label {
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 0.7rem;
-        }
-
-        .pattern-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .pattern-card {
-            padding: 10px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            background-color: rgba(76, 201, 240, 0.1);
-        }
-
-        .emotional-support {
-            background: linear-gradient(135deg, #4cc9f0, #4361ee);
-            color: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            margin-top: 15px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--dark);
-            color: var(--light);
-            padding: 30px 0;
-            margin-top: 40px;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-
-        .footer-section {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 15px;
-            color: var(--success);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <span class="logo-icon">🛡️</span>
-                    <h1>ZaraAI</h1>
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href="#" class="active">Dashboard</a></li>
-                        <li><a href="#">Training</a></li>
-                        <li><a href="#">Analytics</a></li>
-                        <li><a href="#">Team</a></li>
-                        <li><a href="#">Settings</a></li>
-                    </ul>
-                </nav>
-                <button class="theme-toggle" id="themeToggle">🌙</button>
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
-        <div class="main-content">
-            <div class="content-area">
-                <div class="dashboard">
-                    <div class="card">
-                        <h3><span class="card-icon">📊</span> Security Score</h3>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 78%"></div>
-                        </div>
-                        <p>78% - Good</p>
-                    </div>
-                    <div class="card">
-                        <h3><span class="card-icon">🚨</span> Risk Assessment</h3>
-                        <div class="risk-meter">
-                            <div class="risk-indicator" style="left: 30%"></div>
-                        </div>
-                        <p>Medium Risk - 30%</p>
-                    </div>
-                    <div class="card">
-                        <h3><span class="card-icon">🎯</span> Training Progress</h3>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 65%"></div>
-                        </div>
-                        <p>65% Complete</p>
-                    </div>
-                    <div class="card">
-                        <h3><span class="card-icon">❤️</span> Wellness Status</h3>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 85%"></div>
-                        </div>
-                        <p>85% - Optimal</p>
-                    </div>
-                </div>
-
-                <div class="tabs">
-                    <div class="tab active" data-tab="chat">AI Assistant</div>
-                    <div class="tab" data-tab="analytics">Predictive Analytics</div>
-                    <div class="tab" data-tab="team">Team Management</div>
-                    <div class="tab" data-tab="patterns">Behavior Patterns</div>
-                </div>
-
-                <div class="tab-content active" id="chat-tab">
-                    <div class="card">
-                        <div class="chat-container">
-                            <div class="chat-header">
-                                <span>🛡️</span>
-                                <h3>ZaraAI Assistant</h3>
-                            </div>
-                            <div class="chat-messages" id="chatMessages">
-                                <div class="message ai-message">
-                                    Hello! I'm ZaraAI, your cybersecurity and wellness assistant. How can I help you today?
-                                </div>
-                                <div class="message user-message">
-                                    Can you check my security status?
-                                </div>
-                                <div class="message ai-message">
-                                    Your security score is 78% which is good! I notice you haven't completed the phishing simulation this week. Would you like to start one?
-                                </div>
-                            </div>
-                            <div class="chat-input">
-                                <input type="text" id="messageInput" placeholder="Type your message...">
-                                <button id="sendMessage">➤</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="analytics-tab">
-                    <div class="card">
-                        <h3><span class="card-icon">📈</span> Predictive Risk Analytics</h3>
-                        <p>ZaraAI analyzes your behavior patterns to predict potential security risks before they occur.</p>
-                        
-                        <div class="analytics-chart">
-                            <div class="chart-bar" style="height: 70%">
-                                <div class="chart-bar-label">Phishing</div>
-                            </div>
-                            <div class="chart-bar" style="height: 40%">
-                                <div class="chart-bar-label">Password</div>
-                            </div>
-                            <div class="chart-bar" style="height: 60%">
-                                <div class="chart-bar-label">Social</div>
-                            </div>
-                            <div class="chart-bar" style="height: 30%">
-                                <div class="chart-bar-label">Device</div>
-                            </div>
-                            <div class="chart-bar" style="height: 50%">
-                                <div class="chart-bar-label">Data</div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Risk Prediction for Next 30 Days</label>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: 30%"></div>
-                            </div>
-                            <p>30% probability of security incident</p>
-                        </div>
-                        
-                        <button class="btn btn-block">Generate Detailed Report</button>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="team-tab">
-                    <div class="card">
-                        <h3><span class="card-icon">👥</span> Team Management</h3>
-                        <p>Manage your team's cybersecurity training and monitor group progress.</p>
-                        
-                        <div class="team-grid">
-                            <div class="team-member">
-                                <div class="team-avatar">JS</div>
-                                <h4>John Smith</h4>
-                                <p>Security Score: 82%</p>
-                                <span class="badge badge-success">Active</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="team-avatar">MJ</div>
-                                <h4>Maria Johnson</h4>
-                                <p>Security Score: 75%</p>
-                                <span class="badge badge-success">Active</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="team-avatar">RD</div>
-                                <h4>Robert Davis</h4>
-                                <p>Security Score: 68%</p>
-                                <span class="badge badge-warning">Needs Training</span>
-                            </div>
-                            <div class="team-member">
-                                <div class="team-avatar">SW</div>
-                                <h4>Sarah Wilson</h4>
-                                <p>Security Score: 90%</p>
-                                <span class="badge badge-success">Expert</span>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group" style="margin-top: 20px;">
-                            <button class="btn">Add Team Member</button>
-                            <button class="btn btn-success">Schedule Group Training</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="patterns-tab">
-                    <div class="card">
-                        <h3><span class="card-icon">🔮</span> Behavioral Pattern Recognition</h3>
-                        <p>ZaraAI learns from your behavior to identify potential vulnerabilities and provide personalized recommendations.</p>
-                        
-                        <div class="pattern-grid">
-                            <div class="pattern-card">
-                                <h4>Password Habits</h4>
-                                <p>Moderate strength</p>
-                                <span class="badge badge-warning">Needs Improvement</span>
-                            </div>
-                            <div class="pattern-card">
-                                <h4>Phishing Awareness</h4>
-                                <p>High detection rate</p>
-                                <span class="badge badge-success">Excellent</span>
-                            </div>
-                            <div class="pattern-card">
-                                <h4>Social Media Usage</h4>
-                                <p>Low risk sharing</p>
-                                <span class="badge badge-success">Secure</span>
-                            </div>
-                            <div class="pattern-card">
-                                <h4>Device Security</h4>
-                                <p>Regular updates</p>
-                                <span class="badge badge-success">Optimal</span>
-                            </div>
-                        </div>
-                        
-                        <div class="emotional-support">
-                            <h4>❤️ Emotional Intelligence Analysis</h4>
-                            <p>Based on your interaction patterns, I've detected moderate stress levels. Would you like to try a 5-minute mindfulness exercise?</p>
-                            <button class="btn btn-light" style="margin-top: 10px;">Start Exercise</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar">
-                <div class="card user-profile">
-                    <div class="avatar">JD</div>
-                    <h3>John Doe</h3>
-                    <p>Security Administrator</p>
-                    <div class="progress-bar" style="margin: 15px 0;">
-                        <div class="progress" style="width: 78%"></div>
-                    </div>
-                    <p>Level 7 Cyber Defender</p>
-                </div>
-
-                <div class="card">
-                    <h3><span class="card-icon">🏆</span> Achievements</h3>
-                    <ul class="list">
-                        <li class="list-item">
-                            <span>Phishing Master</span>
-                            <span class="badge badge-success">Earned</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Password Guardian</span>
-                            <span class="badge badge-success">Earned</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Social Media Sentinel</span>
-                            <span class="badge">Locked</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Data Defender</span>
-                            <span class="badge">Locked</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card">
-                    <h3><span class="card-icon">📅</span> Upcoming Training</h3>
-                    <ul class="list">
-                        <li class="list-item">
-                            <span>Advanced Phishing</span>
-                            <span class="badge badge-warning">Tomorrow</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Social Engineering</span>
-                            <span class="badge">Next Week</span>
-                        </li>
-                        <li class="list-item">
-                            <span>Data Protection</span>
-                            <span class="badge">In 2 Weeks</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>ZaraAI</h3>
-                    <p>Advanced Cybersecurity & Life Coach powered by DefendIQ technology.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul class="list">
-                        <li><a href="#">Dashboard</a></li>
-                        <li><a href="#">Training Modules</a></li>
-                        <li><a href="#">Security Analytics</a></li>
-                        <li><a href="#">Support</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p>Email: support@zaraai.com</p>
-                    <p>Phone: +1 (555) 123-4567</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 ZaraAI. All rights reserved. | DefendIQ Enterprise Ready</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const currentTheme = localStorage.getItem('theme') || 'light';
+        };
+    }
+
+    analyzeUserBehavior(message, context) {
+        const behaviorSnapshot = {
+            timestamp: new Date().toISOString(),
+            message: message,
+            context: context,
+            detectedRisks: this.detectRiskPatterns(message, context),
+            stressLevel: this.assessStressLevel(message),
+            securityAwareness: this.assessSecurityAwareness(context)
+        };
+
+        this.userBehaviorHistory.push(behaviorSnapshot);
+        this.updateRiskScore(behaviorSnapshot);
         
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        themeToggle.textContent = currentTheme === 'light' ? '🌙' : '☀️';
-        
-        themeToggle.addEventListener('click', () => {
-            const newTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
-        });
+        // Keep only last 100 entries for performance
+        if (this.userBehaviorHistory.length > 100) {
+            this.userBehaviorHistory.shift();
+        }
 
-        // Tab Switching
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Remove active class from all tabs and contents
-                tabs.forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
+        return this.generateRiskPrediction();
+    }
+
+    detectRiskPatterns(message, context) {
+        const detectedRisks = [];
+        const lowerMessage = message.toLowerCase();
+
+        // Analyze stress indicators
+        Object.entries(this.riskPatterns.stressIndicators).forEach(([pattern, data]) => {
+            if (data.triggers.some(trigger => lowerMessage.includes(trigger))) {
+                detectedRisks.push({
+                    type: 'stress',
+                    pattern: pattern,
+                    weight: data.weight,
+                    confidence: this.calculateConfidence(message, data.triggers)
                 });
-                
-                // Add active class to clicked tab and corresponding content
-                tab.classList.add('active');
-                const tabId = tab.getAttribute('data-tab');
-                document.getElementById(`${tabId}-tab`).classList.add('active');
+            }
+        });
+
+        // Analyze context-based risks
+        if (context.includes('stress') && context.includes('security')) {
+            detectedRisks.push({
+                type: 'high_risk_context',
+                pattern: 'stress_security_overlap',
+                weight: 0.85,
+                confidence: 0.9
             });
-        });
-
-        // Chat Functionality
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendMessage = document.getElementById('sendMessage');
-
-        function addMessage(text, isUser) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        sendMessage.addEventListener('click', () => {
-            const message = messageInput.value.trim();
-            if (message) {
-                addMessage(message, true);
-                messageInput.value = '';
-                
-                // Simulate AI response after a short delay
-                setTimeout(() => {
-                    const responses = [
-                        "I've analyzed your security patterns and recommend completing the phishing simulation to improve your score.",
-                        "Based on your recent activity, I've detected some stress indicators. Would you like to try a quick breathing exercise?",
-                        "Your team's security score has improved by 5% this week. Great job!",
-                        "I've updated your risk assessment based on the latest behavioral data."
-                    ];
-                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                    addMessage(randomResponse, false);
-                }, 1000);
-            }
+        return detectedRisks;
+    }
+
+    assessStressLevel(message) {
+        let stressScore = 0;
+        const stressKeywords = {
+            'high': ['overwhelmed', 'anxious', 'panic', 'crisis', 'emergency'],
+            'medium': ['stressed', 'busy', 'pressure', 'deadline', 'urgent'],
+            'low': ['tired', 'sleepy', 'concerned', 'worry']
+        };
+
+        const lowerMessage = message.toLowerCase();
+        
+        Object.entries(stressKeywords).forEach(([level, keywords]) => {
+            const matches = keywords.filter(keyword => lowerMessage.includes(keyword)).length;
+            if (level === 'high') stressScore += matches * 3;
+            if (level === 'medium') stressScore += matches * 2;
+            if (level === 'low') stressScore += matches * 1;
         });
 
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage.click();
-            }
-        });
+        return Math.min(stressScore, 10); // Normalize to 0-10 scale
+    }
 
-        // Simulate dynamic risk indicator
-        const riskIndicator = document.querySelector('.risk-indicator');
-        setInterval(() => {
-            const newRisk = 25 + Math.random() * 20;
-            riskIndicator.style.left = `${newRisk}%`;
-            
-            // Update risk text
-            const riskText = document.querySelector('.card:nth-child(2) p');
-            let riskLevel = 'Low';
-            if (newRisk > 40) riskLevel = 'Medium';
-            if (newRisk > 70) riskLevel = 'High';
-            riskText.textContent = `${riskLevel} Risk - ${Math.round(newRisk)}%`;
-        }, 5000);
-
-        // Initialize with saved data or defaults
-        function initializeApp() {
-            // Load user data from localStorage or set defaults
-            const userData = JSON.parse(localStorage.getItem('zaraai-user') || '{}');
-            
-            if (!userData.securityScore) {
-                userData.securityScore = 78;
-                userData.trainingProgress = 65;
-                userData.wellnessStatus = 85;
-                userData.riskLevel = 30;
-                localStorage.setItem('zaraai-user', JSON.stringify(userData));
-            }
-            
-            // Update UI with user data
-            document.querySelector('.progress-bar .progress').style.width = `${userData.securityScore}%`;
-            document.querySelector('.card:nth-child(3) .progress').style.width = `${userData.trainingProgress}%`;
-            document.querySelector('.card:nth-child(4) .progress').style.width = `${userData.wellnessStatus}%`;
-            riskIndicator.style.left = `${userData.riskLevel}%`;
+    assessSecurityAwareness(context) {
+        let awarenessScore = 5; // Base score
+        
+        if (context.includes('training') || context.includes('learning')) {
+            awarenessScore += 2;
+        }
+        if (context.includes('phishing') || context.includes('security')) {
+            awarenessScore += 1;
+        }
+        if (context.includes('stress') || context.includes('rushed')) {
+            awarenessScore -= 2;
         }
 
-        // Initialize the application
-        initializeApp();
-    </script>
-</body>
-</html>
+        return Math.max(1, Math.min(awarenessScore, 10));
+    }
+
+    calculateConfidence(message, triggers) {
+        const lowerMessage = message.toLowerCase();
+        const matches = triggers.filter(trigger => lowerMessage.includes(trigger)).length;
+        return Math.min(matches / triggers.length * 2, 1); // Normalize to 0-1
+    }
+
+    updateRiskScore(behaviorSnapshot) {
+        let newScore = 5; // Base risk score
+
+        // Adjust based on detected risks
+        behaviorSnapshot.detectedRisks.forEach(risk => {
+            newScore += risk.weight * risk.confidence * 2;
+        });
+
+        // Adjust based on stress level
+        newScore += (behaviorSnapshot.stressLevel / 10) * 3;
+
+        // Adjust based on security awareness (inverse)
+        newScore += ((10 - behaviorSnapshot.securityAwareness) / 10) * 2;
+
+        this.riskScores.current = Math.max(1, Math.min(newScore, 10));
+        this.riskScores.trends.push({
+            timestamp: behaviorSnapshot.timestamp,
+            score: this.riskScores.current
+        });
+
+        // Keep only last 20 trends
+        if (this.riskScores.trends.length > 20) {
+            this.riskScores.trends.shift();
+        }
+    }
+
+    generateRiskPrediction() {
+        if (this.riskScores.trends.length < 3) {
+            return {
+                currentRisk: this.riskScores.current,
+                prediction: 'insufficient_data',
+                confidence: 0,
+                recommendations: this.getGeneralRecommendations()
+            };
+        }
+
+        const trend = this.calculateTrend();
+        const prediction = this.predictFutureRisk(trend);
+        
+        return {
+            currentRisk: this.riskScores.current,
+            trend: trend,
+            prediction: prediction.futureRisk,
+            confidence: prediction.confidence,
+            timeframe: 'next_24_hours',
+            recommendations: this.getTargetedRecommendations(),
+            alertLevel: this.getAlertLevel(this.riskScores.current)
+        };
+    }
+
+    calculateTrend() {
+        const recentScores = this.riskScores.trends.slice(-5);
+        if (recentScores.length < 2) return 'stable';
+
+        const firstScore = recentScores[0].score;
+        const lastScore = recentScores[recentScores.length - 1].score;
+        const difference = lastScore - firstScore;
+
+        if (difference > 1.5) return 'increasing';
+        if (difference < -1.5) return 'decreasing';
+        return 'stable';
+    }
+
+    predictFutureRisk(trend) {
+        let futureRisk = this.riskScores.current;
+        let confidence = 0.7;
+
+        switch (trend) {
+            case 'increasing':
+                futureRisk = Math.min(10, this.riskScores.current + 1.5);
+                confidence = 0.8;
+                break;
+            case 'decreasing':
+                futureRisk = Math.max(1, this.riskScores.current - 1);
+                confidence = 0.6;
+                break;
+            default:
+                futureRisk = this.riskScores.current;
+                confidence = 0.7;
+        }
+
+        return { futureRisk, confidence };
+    }
+
+    getAlertLevel(riskScore) {
+        if (riskScore >= 8) return 'high';
+        if (riskScore >= 6) return 'medium';
+        if (riskScore >= 4) return 'low';
+        return 'minimal';
+    }
+
+    getGeneralRecommendations() {
+        return [
+            "Practice stress management techniques before handling sensitive information",
+            "Take regular breaks during high-pressure periods",
+            "Verify all urgent requests through secondary channels",
+            "Enable multi-factor authentication on critical accounts"
+        ];
+    }
+
+    getTargetedRecommendations() {
+        const recommendations = [];
+        const recentRisks = this.userBehaviorHistory.slice(-3);
+
+        // Analyze recent behavior for targeted advice
+        const highStressCount = recentRisks.filter(snapshot => snapshot.stressLevel >= 7).length;
+        const securityMentions = recentRisks.filter(snapshot => 
+            snapshot.context.includes('security') || snapshot.message.includes('phishing')
+        ).length;
+
+        if (highStressCount >= 2) {
+            recommendations.push({
+                priority: 'high',
+                message: "🚨 High stress detected: Consider postponing critical security decisions until you're less stressed",
+                action: "Take a 5-minute break and practice deep breathing"
+            });
+        }
+
+        if (securityMentions === 0 && this.riskScores.current >= 6) {
+            recommendations.push({
+                priority: 'medium',
+                message: "🔍 Low security awareness: Let's do a quick security refresh",
+                action: "Ask me about current phishing threats or start a training exercise"
+            });
+        }
+
+        if (this.riskScores.current >= 8) {
+            recommendations.push({
+                priority: 'critical',
+                message: "⚡ Critical risk level: Immediate action recommended",
+                action: "Review recent emails carefully, avoid clicking links, and verify suspicious communications"
+            });
+        }
+
+        // Add general recommendations if no specific ones triggered
+        if (recommendations.length === 0) {
+            recommendations.push({
+                priority: 'low',
+                message: "✅ Good security posture maintained",
+                action: "Continue current practices and stay vigilant"
+            });
+        }
+
+        return recommendations;
+    }
+
+    getRiskDashboard() {
+        const trend = this.calculateTrend();
+        const prediction = this.generateRiskPrediction();
+
+        return {
+            currentScore: this.riskScores.current,
+            trend: trend,
+            trendArrow: this.getTrendArrow(trend),
+            prediction: prediction,
+            behaviorHistory: this.userBehaviorHistory.length,
+            averageStress: this.calculateAverageStress(),
+            riskLevel: this.getAlertLevel(this.riskScores.current)
+        };
+    }
+
+    getTrendArrow(trend) {
+        switch (trend) {
+            case 'increasing': return '📈';
+            case 'decreasing': return '📉';
+            default: return '➡️';
+        }
+    }
+
+    calculateAverageStress() {
+        if (this.userBehaviorHistory.length === 0) return 0;
+        const totalStress = this.userBehaviorHistory.reduce((sum, snapshot) => sum + snapshot.stressLevel, 0);
+        return (totalStress / this.userBehaviorHistory.length).toFixed(1);
+    }
+}
+
+// ==================== ENHANCE INTELLIGENCE CORE WITH PREDICTIVE ENGINE ====================
+class EnhancedIntelligenceCore {
+    constructor() {
+        this.currentMode = 'security';
+        this.conversationHistory = [];
+        this.knowledgeBase = this.initializeKnowledge();
+        this.phishingSimulator = new PhishingSimulator();
+        this.riskEngine = new PredictiveRiskEngine();
+        this.teamManager = new TeamManager();
+    }
+
+    // ENHANCE processMessage method with risk assessment
+    processMessage(message) {
+        this.conversationHistory.push({ role: 'user', content: message });
+        const lowerMsg = message.toLowerCase();
+        
+        // Get risk assessment before generating response
+        const riskAssessment = this.riskEngine.analyzeUserBehavior(message, this.detectLifeContext(lowerMsg));
+        
+        // Handle training commands
+        if (lowerMsg.includes('phishing training') || lowerMsg.includes('phishing exercise')) {
+            return this.startPhishingTraining();
+        }
+
+        // Handle risk dashboard requests
+        if (lowerMsg.includes('risk') && lowerMsg.includes('dashboard')) {
+            return this.showRiskDashboard(riskAssessment);
+        }
+        
+        // Detect life context and determine response approach
+        const context = this.detectLifeContext(lowerMsg);
+        const securityRisk = this.assessSecurityRisk(context);
+        
+        return this.generateEnhancedResponse(message, context, securityRisk, riskAssessment);
+    }
+
+    generateEnhancedResponse(originalMessage, contexts, securityRisk, riskAssessment) {
+        let response = { type: 'security', tags: [] };
+        
+        // Add risk context to response
+        response.riskAssessment = riskAssessment;
+
+        // Training context
+        if (contexts.includes('training')) {
+            response.type = 'training';
+            response.tags.push('training');
+            response.response = this.generateTrainingResponse(originalMessage);
+        }
+        // High risk context - prioritize risk mitigation
+        else if (riskAssessment.currentRisk >= 7) {
+            response.type = 'risk_alert';
+            response.tags.push('security', 'risk');
+            response.response = this.generateRiskAwareResponse(contexts, riskAssessment, originalMessage);
+        }
+        // High stress context - lead with wellness
+        else if (contexts.includes('stress') && securityRisk > 0.6) {
+            response.type = 'wellness';
+            response.tags.push('wellness');
+            response.response = this.generateStressAwareResponse(contexts, securityRisk, originalMessage);
+        }
+        // Life event context - bridge to security
+        else if (contexts.some(ctx => ['renovations', 'workPressure', 'familyStress'].includes(ctx))) {
+            response.type = 'life';
+            response.tags.push('life');
+            response.response = this.generateLifeAwareResponse(contexts, originalMessage);
+        }
+        // Pure security context
+        else if (contexts.includes('security')) {
+            response.type = 'security';
+            response.tags.push('security');
+            response.response = this.generateSecurityResponse(originalMessage);
+        }
+        // General context
+        else {
+            response.type = 'security';
+            response.tags.push('security');
+            response.response = this.generateGeneralResponse(originalMessage);
+        }
+        
+        return response;
+    }
+
+    generateRiskAwareResponse(contexts, riskAssessment, message) {
+        const highestRecommendation = riskAssessment.recommendations[0];
+        
+        let response = `🚨 <strong>Risk Alert - Level ${riskAssessment.alertLevel.toUpperCase()}</strong>\n\n`;
+        response += `I'm detecting elevated security risk factors in our conversation.\n\n`;
+        response += `📊 <strong>Current Risk Score:</strong> ${riskAssessment.currentRisk}/10\n`;
+        response += `📈 <strong>Trend:</strong> ${riskAssessment.trend}\n\n`;
+        
+        if (highestRecommendation) {
+            response += `💡 <strong>Priority Recommendation:</strong> ${highestRecommendation.message}\n`;
+            response += `🛠️ <strong>Action:</strong> ${highestRecommendation.action}\n\n`;
+        }
+        
+        response += `Would you like to:\n`;
+        response += `• Discuss specific risk factors I'm detecting\n`;
+        response += `• Practice stress-reduction techniques\n`;
+        response += `• Review security best practices\n`;
+        response += `• See your full risk dashboard`;
+        
+        return response;
+    }
+
+    showRiskDashboard(riskAssessment) {
+        const dashboard = this.riskEngine.getRiskDashboard();
+        
+        let response = `📊 <strong>Security Risk Dashboard</strong>\n\n`;
+        response += `🛡️ <strong>Current Risk Level:</strong> ${dashboard.riskLevel.toUpperCase()}\n`;
+        response += `📈 <strong>Risk Score:</strong> ${dashboard.currentScore}/10 ${dashboard.trendArrow}\n`;
+        response += `🔍 <strong>Trend:</strong> ${dashboard.trend}\n`;
+        response += `😴 <strong>Average Stress:</strong> ${dashboard.averageStress}/10\n`;
+        response += `📝 <strong>Behavior Analysis:</strong> ${dashboard.behaviorHistory} interactions analyzed\n\n`;
+        
+        response += `🎯 <strong>Predictions:</strong>\n`;
+        response += `• 24-hour forecast: ${dashboard.prediction.prediction.toFixed(1)}/10 risk\n`;
+        response += `• Confidence: ${Math.round(dashboard.prediction.confidence * 100)}%\n\n`;
+        
+        response += `💡 <strong>Recommendations:</strong>\n`;
+        riskAssessment.recommendations.forEach((rec, index) => {
+            response += `${index + 1}. ${rec.message}\n`;
+        });
+        
+        return {
+            type: 'risk_dashboard',
+            response: response,
+            tags: ['security', 'analytics']
+        };
+    }
+
+    // ... rest of your existing IntelligenceCore methods remain the same
+    // (detectLifeContext, assessSecurityRisk, generateTrainingResponse, etc.)
+}
+
+// ==================== TEAM MANAGER (First part of team features) ====================
+class TeamManager {
+    constructor() {
+        this.teamMembers = new Map();
+        this.teamScores = {
+            overall: 0,
+            phishing: 0,
+            awareness: 0,
+            engagement: 0
+        };
+    }
+
+    addTeamMember(userId, userData) {
+        this.teamMembers.set(userId, {
+            ...userData,
+            joinDate: new Date().toISOString(),
+            riskScore: 5,
+            trainingCompleted: 0,
+            lastActive: new Date().toISOString()
+        });
+        this.updateTeamScores();
+    }
+
+    updateTeamScores() {
+        // Simplified team scoring - will be enhanced
+        const members = Array.from(this.teamMembers.values());
+        if (members.length === 0) return;
+
+        this.teamScores = {
+            overall: Math.round(members.reduce((sum, m) => sum + (10 - m.riskScore), 0) / members.length),
+            phishing: Math.round(members.reduce((sum, m) => sum + m.trainingCompleted, 0) / members.length * 10),
+            awareness: 65, // Placeholder - will be calculated from behavior
+            engagement: Math.round((members.filter(m => 
+                new Date() - new Date(m.lastActive) < 7 * 24 * 60 * 60 * 1000
+            ).length / members.length) * 100)
+        };
+    }
+
+    getTeamDashboard() {
+        return {
+            memberCount: this.teamMembers.size,
+            scores: this.teamScores,
+            recentActivity: this.getRecentActivity(),
+            riskDistribution: this.getRiskDistribution()
+        };
+    }
+
+    getRecentActivity() {
+        // Simplified - will be enhanced
+        return Array.from(this.teamMembers.values())
+            .sort((a, b) => new Date(b.lastActive) - new Date(a.lastActive))
+            .slice(0, 5)
+            .map(member => ({
+                name: member.name || 'Team Member',
+                activity: 'Completed training',
+                time: 'Recently'
+            }));
+    }
+
+    getRiskDistribution() {
+        const members = Array.from(this.teamMembers.values());
+        return {
+            low: members.filter(m => m.riskScore <= 3).length,
+            medium: members.filter(m => m.riskScore > 3 && m.riskScore <= 6).length,
+            high: members.filter(m => m.riskScore > 6).length
+        };
+    }
+}
+
+// ==================== UPDATE CHAT MANAGER ====================
+class EnhancedChatManager {
+    constructor() {
+        this.intelligenceCore = new EnhancedIntelligenceCore();
+        this.progressTracker = new ProgressTracker();
+        this.setupEventListeners();
+        
+        // Initialize with demo team member for testing
+        this.initializeDemoData();
+    }
+
+    initializeDemoData() {
+        // Add demo team member to show team features
+        this.intelligenceCore.teamManager.addTeamMember('demo-user', {
+            name: 'You',
+            riskScore: 5,
+            trainingCompleted: 2
+        });
+    }
+
+    // ... your existing setupEventListeners, processUserInput, etc. remain the same
+    // Just make sure to use this.intelligenceCore instead of the old one
+}
+</script>
